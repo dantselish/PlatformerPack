@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c5e18efe0b61ebf46bed03eafd83d92d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313229
+  packageName: KayKit - Platformer Pack (for Unity)
+  packageVersion: 1.0.0
+  assetPath: Assets/KayKit/Packs/Platformer Pack (for Unity)/Demo/URP/Demo_Floor.mat
+  uploadId: 738590
