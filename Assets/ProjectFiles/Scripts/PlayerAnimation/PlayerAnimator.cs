@@ -6,9 +6,10 @@ public class PlayerAnimator : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
 
-    private static readonly int _walk = Animator.StringToHash("Walk");
-    private static readonly int _run  = Animator.StringToHash("Run");
-    private static readonly int _jump = Animator.StringToHash("Jump");
+    private static readonly int _walk     = Animator.StringToHash("Walk");
+    private static readonly int _run      = Animator.StringToHash("Run");
+    private static readonly int _jump     = Animator.StringToHash("Jump");
+    private static readonly int _interact = Animator.StringToHash("Interact");
 
 
     public void SetWalk(bool state)
@@ -24,5 +25,10 @@ public class PlayerAnimator : MonoBehaviour
     public void SetJump()
     {
         animator.SetTrigger(_jump);
+    }
+
+    public void SetInteract()
+    {
+        animator.SetTrigger(_interact);
     }
 }

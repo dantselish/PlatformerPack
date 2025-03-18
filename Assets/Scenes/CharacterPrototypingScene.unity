@@ -167,7 +167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementTransform: {fileID: 270928784}
   playerAnimator: {fileID: 919132147875796824}
-  walkingSpeed: 0
+  walkingSpeed: 1.5
+  runningSpeed: 3
 --- !u!1 &499385810
 GameObject:
   m_ObjectHideFlags: 0

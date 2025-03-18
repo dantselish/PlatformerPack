@@ -5,14 +5,18 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputReader : MonoBehaviour, IInputContainer
 {
-    private const string MOVE_ACTION_NAME = "Move";
-    private const string JUMP_ACTION_NAME = "Jump";
+    private const string MOVE_ACTION_NAME     = "Move";
+    private const string SPRINT_ACTION_NAME   = "Sprint";
+    private const string JUMP_ACTION_NAME     = "Jump";
+    private const string INTERACT_ACTION_NAME = "Interact";
 
     [SerializeField] private InputActionAsset inputActionAsset;
 
     #region Actions
     private InputAction _movementAction;
+    private InputAction _sprintAction;
     private InputAction _jumpAction;
+    private InputAction _interactAction;
     #endregion
 
     private InputValues _inputValues;
@@ -84,12 +88,34 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
     private void FindActions()
     {
         _movementAction = inputActionAsset.FindAction(MOVE_ACTION_NAME, true);
+        _sprintAction   = inputActionAsset.FindAction(SPRINT_ACTION_NAME, true);
         _jumpAction     = inputActionAsset.FindAction(JUMP_ACTION_NAME, true);
+        _interactAction = inputActionAsset.FindAction(INTERACT_ACTION_NAME, true);
     }
 
     private void SubscribeToActions()
     {
         _jumpAction.performed += JumpActionOnPerformed;
+
+        _sprintAction.performed += SprintActionOnPerformed;
+        _sprintAction.canceled += SprintActionOncanceled;
+
+        _interactAction.performed += InteractActionOnPerformed;
+    }
+
+    private void InteractActionOnPerformed(InputAction.CallbackContext obj)
+    {
+        NotifyInputAction(InputActionType.Interact);
+    }
+
+    private void SprintActionOncanceled(InputAction.CallbackContext obj)
+    {
+        _inputValues.sprint = false;
+    }
+
+    private void SprintActionOnPerformed(InputAction.CallbackContext obj)
+    {
+        _inputValues.sprint = true;
     }
 
     private void JumpActionOnPerformed(InputAction.CallbackContext obj)

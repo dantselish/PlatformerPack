@@ -2,5 +2,6 @@
 {
     None,
 
-    Jump
+    Jump,
+    Interact
 }

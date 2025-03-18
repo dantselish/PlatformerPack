@@ -9,6 +9,7 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver
 
     [Header("Settings")]
     [SerializeField] private float walkingSpeed;
+    [SerializeField] private float runningSpeed;
 
     private InputValues _inputValues;
 
@@ -31,7 +32,15 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver
 
     public void UpdateAction(InputActionType inputActionType)
     {
-        playerAnimator.SetJump();
+        if (inputActionType == InputActionType.Jump)
+        {
+            playerAnimator.SetJump();
+        }
+
+        if (inputActionType == InputActionType.Interact)
+        {
+            playerAnimator.SetInteract();
+        }
     }
 
     private void ProcessMovement()
@@ -47,8 +56,20 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver
         Vector3 translationVector = Vector3.zero;
         translationVector += Vector3.forward * inputVector.y;
         translationVector += Vector3.right * inputVector.x;
-        translationVector *= walkingSpeed * Time.deltaTime;
+
+        if (_inputValues.sprint)
+        {
+            playerAnimator.SetWalk(false);
+            playerAnimator.SetRun(true);
+            translationVector *= runningSpeed * Time.deltaTime;
+        }
+        else
+        {
+            playerAnimator.SetWalk(true);
+            playerAnimator.SetRun(false);
+            translationVector *= walkingSpeed * Time.deltaTime;
+        }
+
         movementTransform.Translate(translationVector);
-        playerAnimator.SetWalk(true);
     }
 }
