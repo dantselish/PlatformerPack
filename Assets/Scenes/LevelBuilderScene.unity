@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 57f57dfe07f942f48a17605b56a2a05e, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ca294ac5f951b5e488dfba905f9d451e, type: 2}
     - target: {fileID: 919132149155446097, guid: 57f57dfe07f942f48a17605b56a2a05e, type: 3}
       propertyPath: m_Name
       value: conveyor_4x8x1_green (1)
@@ -911,6 +915,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 57f57dfe07f942f48a17605b56a2a05e, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ca294ac5f951b5e488dfba905f9d451e, type: 2}
     - target: {fileID: 919132149155446097, guid: 57f57dfe07f942f48a17605b56a2a05e, type: 3}
       propertyPath: m_Name
       value: conveyor_4x8x1_green
