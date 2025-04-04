@@ -80,6 +80,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dance"",
+                    ""type"": ""Button"",
+                    ""id"": ""39e8c070-e8a5-48ad-87e4-c34b8264a0dc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -300,6 +309,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce2ff06f-2057-4e49-b4f9-39acfcbce985"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Dance"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c39acd6-e018-441b-9a6a-826dbe3680a7"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Dance"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -860,6 +891,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Ground_Interact = m_Ground.FindAction("Interact", throwIfNotFound: true);
         m_Ground_Jump = m_Ground.FindAction("Jump", throwIfNotFound: true);
         m_Ground_Sprint = m_Ground.FindAction("Sprint", throwIfNotFound: true);
+        m_Ground_Dance = m_Ground.FindAction("Dance", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -945,6 +977,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Ground_Interact;
     private readonly InputAction m_Ground_Jump;
     private readonly InputAction m_Ground_Sprint;
+    private readonly InputAction m_Ground_Dance;
     public struct GroundActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -955,6 +988,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Ground_Interact;
         public InputAction @Jump => m_Wrapper.m_Ground_Jump;
         public InputAction @Sprint => m_Wrapper.m_Ground_Sprint;
+        public InputAction @Dance => m_Wrapper.m_Ground_Dance;
         public InputActionMap Get() { return m_Wrapper.m_Ground; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -982,6 +1016,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @Dance.started += instance.OnDance;
+            @Dance.performed += instance.OnDance;
+            @Dance.canceled += instance.OnDance;
         }
 
         private void UnregisterCallbacks(IGroundActions instance)
@@ -1004,6 +1041,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @Dance.started -= instance.OnDance;
+            @Dance.performed -= instance.OnDance;
+            @Dance.canceled -= instance.OnDance;
         }
 
         public void RemoveCallbacks(IGroundActions instance)
@@ -1165,6 +1205,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnDance(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

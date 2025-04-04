@@ -9,6 +9,7 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
     private const string SPRINT_ACTION_NAME   = "Sprint";
     private const string JUMP_ACTION_NAME     = "Jump";
     private const string INTERACT_ACTION_NAME = "Interact";
+    private const string DANCE_ACTION_NAME    = "Dance";
 
     [SerializeField] private InputActionAsset inputActionAsset;
 
@@ -17,6 +18,7 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
     private InputAction _sprintAction;
     private InputAction _jumpAction;
     private InputAction _interactAction;
+    private InputAction _danceAction;
     #endregion
 
     private InputValues _inputValues;
@@ -91,6 +93,7 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
         _sprintAction   = inputActionAsset.FindAction(SPRINT_ACTION_NAME, true);
         _jumpAction     = inputActionAsset.FindAction(JUMP_ACTION_NAME, true);
         _interactAction = inputActionAsset.FindAction(INTERACT_ACTION_NAME, true);
+        _danceAction    = inputActionAsset.FindAction(DANCE_ACTION_NAME, true);
     }
 
     private void SubscribeToActions()
@@ -101,6 +104,8 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
         _sprintAction.canceled += SprintActionOncanceled;
 
         _interactAction.performed += InteractActionOnPerformed;
+
+        _danceAction.performed += DanceActionOnPerformed;
     }
 
     private void InteractActionOnPerformed(InputAction.CallbackContext obj)
@@ -121,5 +126,10 @@ public class PlayerInputReader : MonoBehaviour, IInputContainer
     private void JumpActionOnPerformed(InputAction.CallbackContext obj)
     {
         NotifyInputAction(InputActionType.Jump);
+    }
+
+    private void DanceActionOnPerformed(InputAction.CallbackContext obj)
+    {
+        NotifyInputAction(InputActionType.Dance);
     }
 }

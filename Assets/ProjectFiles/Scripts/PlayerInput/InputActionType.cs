@@ -3,5 +3,6 @@
     None,
 
     Jump,
-    Interact
+    Interact,
+    Dance
 }
