@@ -10,10 +10,7 @@ public class Squash : MonoBehaviour
     [SerializeField] private float force;
     [SerializeField] private float collisionCooldownTime;
 
-    private Vector3 direction;
-
     private bool _isOnCooldown;
-
     private float _cooldownTimer;
 
 
@@ -43,23 +40,13 @@ public class Squash : MonoBehaviour
         squashCollider.enabled = true;
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
-        ISquashable squashable = other.gameObject.GetComponent<ISquashable>();
+        SquashTrigger squashTrigger = other.GetComponent<SquashTrigger>();
 
-        if (squashable != null)
+        if (squashTrigger)
         {
-            ContactPoint contactPoint = other.contacts[0];
-            Vector3 direction = (other.collider.ClosestPoint(contactPoint.point) - contactPoint.point).normalized;
-            this.direction = direction;
-            squashable.Squash(direction * force, contactPoint.point);
             DisableCollision();
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + direction * 300);
     }
 }

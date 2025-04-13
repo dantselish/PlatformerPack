@@ -7,28 +7,38 @@ using UnityEngine;
 
 public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCallbackReceiver, IInteractor, IPoppable, IRespawnable, ISquashable
 {
-    [Header("References")]
+    [Header("Basic References")]
     [SerializeField] private Transform movementTransform;
     [SerializeField] private Transform cameraTarget;
-    [SerializeField] private PlayerAnimator playerAnimator;
-    [SerializeField] private GameObject playerCameraPrefab;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private CapsuleCollider playerCollider;
     [SerializeField] private List<GroundDetector> groundDetectors;
     [SerializeField] private ParticleSystem popParticle;
     [SerializeField] private GameObject characterVisuals;
 
-    [Header("Settings")]
+    [Space]
+    [Header("PlayerParts")]
+    [SerializeField] private SquashTriggersHolder squashTriggersHolder;
+    [SerializeField] private PlayerColliderController playerColliderController;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    [SerializeField] private GameObject playerCameraPrefab;
+
+    [Space]
+    [Header("Movement")]
     [SerializeField] private float walkingSpeed;
     [SerializeField] private float runningSpeed;
     [SerializeField] private float rotationSpeed;
 
     [Space]
+    [Header("Jump")]
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpTriggerResetTime;
 
     [Space]
     [SerializeField] private float squashTime;
+
+    [Space]
+    [SerializeField] private Vector3 centerOfMass;
 
     private Sequence _squashSequence;
     private InteractZone _currentInteractZone;
@@ -58,12 +68,17 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCal
         SpawnCamera();
         playerAnimator.AddCallbackReceiver(this);
         _isUncontrolled = false;
+        rb.centerOfMass = centerOfMass;
     }
 
     private void Start()
     {
         IInputContainer inputContainer = FindAnyObjectByType<PlayerInputReader>();
         inputContainer.Attach(this);
+
+        playerColliderController.SwitchToCapsule();
+
+        squashTriggersHolder.SubscribeSqusahble(this);
     }
 
     private void Update()
@@ -118,39 +133,15 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCal
     #endregion
 
     #region ISquashable
-    public void Squash(Vector3 force, Vector3 contactPoint)
+    public void Squash(SquashDirection squashDirection)
     {
-        Vector3 direction = force.normalized;
+        Debug.Log($"{nameof(squashDirection)} {squashDirection}");
 
-        float colliderRadius = playerCollider.radius;
-        float colliderHeight = (playerCollider.height * 0.5f) - colliderRadius;
+        bool isPinned = true;
 
-        float dotProduct = Vector3.Dot(direction, transform.up);
+        _isSquashed = isPinned;
 
-        Vector3 oppositePoint;
-
-        if (Mathf.Abs(dotProduct) > 0.5f)
-        {
-            float moveAmount = colliderHeight;
-            oppositePoint = transform.position - (Mathf.Sign(dotProduct) * transform.up * moveAmount);
-        }
-        else
-        {
-            oppositePoint = playerCollider.ClosestPoint(contactPoint) - direction * colliderRadius;
-        }
-
-        _squashCheckRay = new Ray(oppositePoint, force.normalized);
-        bool isPinned = Physics.Raycast(_squashCheckRay, out RaycastHit raycastHit, 0.5f);
-
-        if (isPinned)
-        {
-            _isSquashed = true;
-            PlaySquashSequence(raycastHit.normal);
-        }
-        else
-        {
-            rb.AddForce(force, ForceMode.Impulse);
-        }
+        PlaySquashSequence(squashDirection);
     }
     #endregion
 
@@ -342,6 +333,8 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCal
 
         playerAnimator.SetIsControlled(false);
         playerAnimator.SetKnockDown();
+
+        playerColliderController.SwitchToMesh();
     }
 
     private void LeaveUncontrolledState()
@@ -362,6 +355,8 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCal
 
         //Set constrains
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        playerColliderController.SwitchToCapsule();
     }
 
     private void TryInteract()
@@ -395,10 +390,19 @@ public class PlayerBasicController : MonoBehaviour, IInputObserver, IAnimatorCal
         _isPopped = false;
     }
 
-    private void PlaySquashSequence(Vector3 direction)
+    private void PlaySquashSequence(SquashDirection squashDirection)
     {
-        direction = transform.InverseTransformDirection(direction);
-        direction = new Vector3(Mathf.Abs(direction.x), Mathf.Abs(direction.y), Mathf.Abs(direction.z));
+        Vector3 direction = Vector3.zero;
+
+        switch (squashDirection)
+        {
+            case SquashDirection.Up:
+            case SquashDirection.Down: direction = Vector3.up; break;
+            case SquashDirection.Right:
+            case SquashDirection.Left: direction = Vector3.right; break;
+            case SquashDirection.Forward:
+            case SquashDirection.Backward: direction = Vector3.forward; break;
+        }
 
         if (_squashSequence != null && _squashSequence.IsPlaying())
         {
